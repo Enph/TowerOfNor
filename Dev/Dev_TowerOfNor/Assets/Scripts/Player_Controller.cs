@@ -3,25 +3,31 @@ using System.Collections;
 
 public class Player_Controller : MonoBehaviour {
 
-	CharacterController PlayerController;
-    public float PlayerMovementSpeed = 30.0f;
+    public float PlayerMovementSpeed = 10.0f;
     public float PlayerRotationSpeed = 180.0f;
-    public float JumpSpeed = 10.0f;
-    public float Gravity = -3.0f;
-    private bool Grounded = false;
-
+    public float PlayerJumpHeight = 20.0f;
+    public float Gravity = 50.0f;
+    private int maxJumpCount = 2;
+    private int jumpCount = 0;
 
 	// Use this for initialization
 	void Start () {
-        this.Grounded = true;
+        this.maxJumpCount = 2;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        Physics.gravity = new Vector3(0.0f, -Gravity, 0.0f);
         Movement();
         UserInputs();
 	}
+
+    void OnCollisionEnter()
+    {
+        //Debug.print("Collided");
+        jumpCount = 0; // Reset the jump count when player touches the ground
+    }
 
 	void Movement()
 	{
@@ -31,8 +37,6 @@ public class Player_Controller : MonoBehaviour {
         transform.Translate(Input.GetAxis("Horizontal") * Time.deltaTime * PlayerMovementSpeed, 0, 0);
         // Rotate player on Y Axis.
         //transform.Rotate(0, Input.GetAxis("RightStick") * Time.deltaTime * PlayerRotationSpeed, 0, 0);
-
-
 	}
 
     void UserInputs()
@@ -68,9 +72,12 @@ public class Player_Controller : MonoBehaviour {
         }
 
         // Right Bumper is read from Input Positive Button "joystick button 5"
-        if (Input.GetButtonDown("360_RightBumper"))
+        if (Input.GetButtonDown("360_RightBumper") && jumpCount < 2)
         {
             Debug.print("Right Bumper!");
+            rigidbody.velocity = new Vector3(0.0f,10.0f,0.0f);
+            transform.position += transform.up * Time.deltaTime * PlayerJumpHeight;
+            jumpCount++;
         }
 
         // Back Button is read from Input Positive Button "joystick button 6"
