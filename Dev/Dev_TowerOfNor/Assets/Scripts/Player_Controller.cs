@@ -5,20 +5,24 @@ public class Player_Controller : MonoBehaviour {
 
     public float PlayerMovementSpeed = 10.0f;
     public float PlayerRotationSpeed = 180.0f;
-    public float PlayerJumpHeight = 20.0f;
-    public float Gravity = 50.0f;
-    private int maxJumpCount = 2;
+    public float PlayerJumpHeight = 10.0f;
+    public float Gravity = 20.0f;
     private int jumpCount = 0;
+    public GUI_Menu menuScript;
+
+
+
+
 
 	// Use this for initialization
 	void Start () {
-        this.maxJumpCount = 2;
+        Physics.gravity = new Vector3(0.0f, -Gravity, 0.0f);
+        
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Physics.gravity = new Vector3(0.0f, -Gravity, 0.0f);
         Movement();
         UserInputs();
 	}
@@ -75,8 +79,7 @@ public class Player_Controller : MonoBehaviour {
         if (Input.GetButtonDown("360_RightBumper") && jumpCount < 2)
         {
             Debug.print("Right Bumper!");
-            rigidbody.velocity = new Vector3(0.0f,10.0f,0.0f);
-            transform.position += transform.up * Time.deltaTime * PlayerJumpHeight;
+            gameObject.rigidbody.velocity = new Vector3(0.0f,10.0f,0.0f);
             jumpCount++;
         }
 
@@ -90,6 +93,7 @@ public class Player_Controller : MonoBehaviour {
         if (Input.GetButtonDown("360_StartButton"))
         {
             Debug.print("Start Button!");
+            menuScript.ToggleMenu();
         }
 
         // Left Thumbstick Button is read from Input Positive Button "joystick button 8"
